@@ -893,8 +893,8 @@ import hashlib
 
 # --- API Configuration ---
 BASE_URL = "https://mock-api.roostoo.com"
-API_KEY = "YOUR_API_KEY_HERE"      # Replace with your actual API key
-SECRET_KEY = "YOUR_SECRET_KEY_HERE"  # Replace with your actual secret key
+API_KEY = "bOgmjqtJr3HPWwbe9HOYE757WgrfVLGNteS0xEbJn4b9ObywX45iTwMcepx52Q3J"      # Replace with your actual API key
+SECRET_KEY = "xWw5btLKy0tjHD1TkzAQCFJNX7rdsGGsaIr4QPKUMzHiviqDoXoBzGKClrhLfXGx"  # Replace with your actual secret key
 
 
 # ------------------------------
