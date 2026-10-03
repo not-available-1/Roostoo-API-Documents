@@ -1,4 +1,3 @@
-# live_broker.py
 import requests
 import time
 import hmac
@@ -42,7 +41,7 @@ class LiveBroker(BaseBroker):
 
     def get_server_time(self) -> int:
         self._rate_limit_check()
-        resp = requests.get(f"{self.base_url}/api/v1/serverTime")
+        resp = requests.get(f"{self.base_url}/v3/serverTime")
         resp.raise_for_status()
         j = resp.json()
         return j["ServerTime"]
@@ -50,20 +49,20 @@ class LiveBroker(BaseBroker):
     def get_balance(self):
         self._rate_limit_check()
         headers, payload_str = self._sign_request({})
-        resp = requests.get(f"{self.base_url}/api/v1/account", headers=headers, params=payload_str)
+        resp = requests.get(f"{self.base_url}/v3/account", headers=headers, params=payload_str)
         resp.raise_for_status()
         return resp.json()
 
     def get_exchange_info(self):
         self._rate_limit_check()
-        resp = requests.get(f"{self.base_url}/api/v1/exchangeInfo")
+        resp = requests.get(f"{self.base_url}/v3/exchangeInfo")
         resp.raise_for_status()
         return resp.json()
 
     def get_ticker(self, pair:str):
         self._rate_limit_check()
         params = {"pair":pair}
-        resp = requests.get(f"{self.base_url}/api/v1/ticker/price", params=params)
+        resp = requests.get(f"{self.base_url}/v3/ticker/price", params=params)
         resp.raise_for_status()
         return resp.json()
 
@@ -79,7 +78,7 @@ class LiveBroker(BaseBroker):
             payload["price"] = str(intent.price)
         headers, data_raw = self._sign_request(payload)
         headers["Content-Type"] = "application/x-www-form-urlencoded"
-        resp = requests.post(f"{self.base_url}/api/v1/order", headers=headers, data=data_raw)
+        resp = requests.post(f"{self.base_url}/v3/order", headers=headers, data=data_raw)
         resp.raise_for_status()
         j = resp.json()
         ok = j.get("Success", False)
@@ -93,6 +92,6 @@ class LiveBroker(BaseBroker):
             payload["pair"] = pair
         headers, data_raw = self._sign_request(payload)
         headers["Content-Type"] = "application/x-www-form-urlencoded"
-        resp = requests.post(f"{self.base_url}/api/v1/order/cancel", headers=headers, data=data_raw)
+        resp = requests.post(f"{self.base_url}/v3/order/cancel", headers=headers, data=data_raw)
         resp.raise_for_status()
         return resp.json()

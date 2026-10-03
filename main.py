@@ -1,64 +1,88 @@
-# main.py 读取.env版本，密钥不硬编码，用于Github和AWS
+
 import os
 import time
+import random
 from dotenv import load_dotenv
-
-# 读取本地 .env 文件，密钥放在 .env，不写在代码里
-load_dotenv()
-
-API_KEY = os.getenv("API_KEY")
-SECRET_KEY = os.getenv("SECRET_KEY")
-BASE_URL = os.getenv("BASE_URL")
-MAX_RATE_PER_MINUTE = int(os.getenv("MAX_RATE_PER_MINUTE"))
-TIME_OFFSET_TOLERANCE = int(os.getenv("TIME_OFFSET_TOLERANCE"))
-
 from live_broker import LiveBroker
 from base import OrderIntent
 
-def main():
-    print("=== Bot 启动，开始时钟校准 ===")
-    broker = LiveBroker(
-        api_key=API_KEY,
-        secret_key=SECRET_KEY,
-        base_url=BASE_URL,
-        max_rpm=MAX_RATE_PER_MINUTE,
-        tolerance=TIME_OFFSET_TOLERANCE
-    )
+# 加载.env环境变量
+load_dotenv()
+API_KEY = os.getenv("API_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY")
+BASE_URL = os.getenv("BASE_URL")
 
-    server_ts = broker.get_server_time()
-    local_ts = int(time.time() * 1000)
-    delta_ms = abs(server_ts - local_ts)
-    print(f"服务器时间戳: {server_ts}")
-    print(f"本地机器时间戳: {local_ts}")
-    print(f"时间差(毫秒): {delta_ms}")
+# ================== 策略配置 ==================
+PAIR = "SOL/USD"       # 交易标的
+ORDER_SIZE = 0.01      # 小额订单，不要调大
+INTERVAL_SECONDS = 8   # 下单间隔
+MAX_POSITION = 0.5     # SOL最大持仓上限
+MAX_RPM = 30           # API最大请求速率
+TOLERANCE = 0.005      # 价格容差
+# ==============================================
 
-    if delta_ms > broker.tolerance_ms:
-        print(f"时间偏差过大 {delta_ms}ms，程序直接退出！")
-        return
+def simple_activity_bot():
+    broker = LiveBroker(API_KEY, SECRET_KEY, BASE_URL, MAX_RPM, TOLERANCE)
+    print("===== 活跃度机器人启动 =====")
+    print(f"交易对: {PAIR}, 单次下单量: {ORDER_SIZE}, 下单间隔: {INTERVAL_SECONDS}s")
+    print("Ctrl + C 随时终止程序\n")
 
-    print("时钟校验通过，进入主循环")
+    try:
+        while True:
+            # 获取行情
+            ticker = broker.get_ticker(PAIR)
+            if not ticker:
+                print("获取行情失败，等待下一轮...")
+                time.sleep(INTERVAL_SECONDS)
+                continue
+            price = float(ticker["price"])
+            print(f"\n【{time.ctime()}】 {PAIR} 当前价格: {price}")
 
-    while True:
-        try:
-            bal = broker.get_balance()
-            print("\n【账户信息】", bal)
+            # 查询账户余额
+            balance = broker.get_balance()
+            if not balance:
+                print("获取账户余额失败，等待下一轮...")
+                time.sleep(INTERVAL_SECONDS)
+                continue
+            sol_free = float(balance.get("SOL", {}).get("free", 0))
+            print(f"当前SOL可用持仓: {sol_free}")
 
-            # ====== 去掉下面两行前面 # 号就会自动下单，提高交易活跃度 ======
-            # test_order = OrderIntent(
-            #     pair="BNB/USD",
-            #     side="BUY",
-            #     quantity=0.01,
-            #     price=None,
-            #     order_type="MARKET",
-            #     reason="test‑activate‑trade"
-            # )
-            # res = broker.place_order(test_order)
-            # print("下单返回：", res)
+            # 随机选择 BUY / SELL，增加交易多样性
+            side = random.choice(["BUY", "SELL"])
 
-        except Exception as err:
-            print("捕获异常:", err)
+            # 风控：如果准备买入，且持仓已经超过上限，强制改成卖出
+            if side == "BUY" and sol_free >= MAX_POSITION:
+                print(f"持仓{sol_free}超过上限{MAX_POSITION}，改为SELL")
+                side = "SELL"
 
-        time.sleep(12)
+            # 设置限价单价格
+            if side == "BUY":
+                limit_price = round(price * 0.999, 2)
+            else:
+                limit_price = round(price * 1.001, 2)
+
+            # ✅ 构建 OrderIntent 对象（适配live_broker接口）
+            order_intent = OrderIntent(
+                pair=PAIR,
+                side=side,
+                order_type="LIMIT",
+                price=limit_price,
+                quantity=ORDER_SIZE
+            )
+            order_resp = broker.place_order(order_intent)
+
+            if order_resp.success:
+                order_id = order_resp.order_id
+                print(f"✅ {side} 下单成功！订单ID: {order_id}")
+            else:
+                print(f"❌ 下单失败，返回信息: {order_resp.raw_response}")
+
+            time.sleep(INTERVAL_SECONDS)
+
+    except KeyboardInterrupt:
+        print("\n\n🤖 收到终止信号，机器人停止运行。")
+    except Exception as e:
+        print(f"\n💥 程序异常：{e}")
 
 if __name__ == "__main__":
-    main()
+    simple_activity_bot()
