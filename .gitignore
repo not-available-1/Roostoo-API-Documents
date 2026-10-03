@@ -9,3 +9,5 @@ __pycache__/
 *.log
 .vscode/
 .idea/
+.DS_Store
+.Rhistory
