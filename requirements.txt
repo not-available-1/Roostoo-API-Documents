@@ -1,0 +1,6 @@
+requests>=2.31
+pandas>=2.0
+numpy>=1.24
+python-dotenv>=1.0
+pyarrow>=14.0   # pandas 读写 .parquet 的后端; partB 缓存/OI 收集全都依赖它
+polars>=1.36    # quant-coder 新写的 ETL/评估脚本用; 已有代码(交接层)仍用 pandas, 两者并存

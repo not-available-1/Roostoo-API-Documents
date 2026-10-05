@@ -1,0 +1,10 @@
+# 部署脚本要在 Linux 服务器上跑（systemd unit + bash）。
+# Windows 上 checkout 成 CRLF 的话, `#!/bin/bash\r` 会报 "bad interpreter: No such file or directory",
+# 而且这个错**只在服务器上出现**, 本地怎么测都看不出来 —— 属于最难排查的一类坑。
+# 强制这几个类型用 LF, 不管在哪个平台 checkout。
+*.sh text eol=lf
+*.service text eol=lf
+*.bash text eol=lf
+
+# 其余文本文件按平台默认处理（Windows 上会是 CRLF, 对 .py/.md/.csv 无影响）
+* text=auto

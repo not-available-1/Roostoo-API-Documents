@@ -1,0 +1,44 @@
+# secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# 主办方发的凭据邮件存档（含真实 API Key / Secret，以及队友邮箱）。
+# 这个仓库要开源，一旦推上去密钥就等于公开泄露、必须作废重发。
+# 文件留在本地磁盘，只是永不进版本库。
+docs/refs/EMAIL.txt
+docs/refs/邮件*
+
+# runtime
+logs/
+*.sqlite3
+*.sqlite3-*
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# data caches (large)
+data/cache/
+*.parquet
+*.zip
+# 运行期累积的采样文件（stock_yahoo --sample-live 每跑一次追加 21 行），不是交付物
+partB/cache/live/stock_tracking.csv
+
+# editor / os
+.DS_Store
+.idea/
+.vscode/
+
+# local-only archives / locked leftovers (not part of the deliverable)
+_archive/
+_partB/
+partB 2/
+
+# 主办方 API 文档的 clone（它自己是个 git 仓库）。
+# 不提交：git 会把它当成 submodule 指针（gitlink）但没有 .gitmodules，
+# 别人 clone 下来只会得到一个空目录。需要时自己拉：
+#   git clone https://github.com/not-available-1/Roostoo-API-Documents.git
+Roostoo-API-Documents/

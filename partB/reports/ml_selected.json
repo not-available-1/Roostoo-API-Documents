@@ -1,0 +1,151 @@
+{
+  "note": "B 侧 ML 挖因子结果。**每个条目都是一个因子**, 走和手工因子一样的宽表接口; 选哪些、怎么加权、怎么变成下单比例仍是 C 的决定。",
+  "universe_symbols": 65,
+  "interval": "4h",
+  "horizon_bars": 6,
+  "split_iso": "2026-01-01",
+  "min_usd": 1000000,
+  "n_features": 75,
+  "models_tried": [
+    "bag",
+    "lasso",
+    "pca",
+    "ridge"
+  ],
+  "walk_forward": true,
+  "label": "未来 6 根 4h bar 的对数收益, 横截面去均值+标准化（只学选币, 不学择时）",
+  "gate": "|IC_IR_IS|>=0.05, IS 季度命中>=0.67, LS alpha>0 且 t>=2.0(按 IS 方向), |corr|<=0.5",
+  "veto": {
+    "oos_alpha_le_0": [
+      "ml_pc3"
+    ],
+    "dup_of_handcrafted": [
+      "ml_lasso",
+      "ml_pc1",
+      "ml_pc2",
+      "ml_ridge"
+    ]
+  },
+  "dedup_seed": [
+    "mom_30d_skip1d",
+    "lowvol_14d",
+    "rangepos_14d"
+  ],
+  "t_crit_bonferroni": 2.734,
+  "selected": [
+    "ml_bag"
+  ],
+  "ic_ir_weights": {
+    "ml_bag": 1.0
+  },
+  "ic_sign_is": {
+    "ml_bag": 1
+  },
+  "stats": {
+    "ml_bag": {
+      "IC_IR_IS": 0.273,
+      "IC_IR_OOS": 0.3326,
+      "alpha_IS_%/y": 108.9,
+      "t_alpha_IS": 6.04,
+      "t_alpha_IS_nw": 3.3,
+      "alpha_OOS_%/y": 98.2,
+      "t_alpha_OOS": 4.33,
+      "turnover": 0.335,
+      "max_corr_vs_hand": 0.479,
+      "oos_veto": false,
+      "pass_bonferroni": true
+    },
+    "ml_lasso": {
+      "IC_IR_IS": 0.2301,
+      "IC_IR_OOS": 0.355,
+      "alpha_IS_%/y": 76.0,
+      "t_alpha_IS": 4.17,
+      "t_alpha_IS_nw": 2.25,
+      "alpha_OOS_%/y": 101.9,
+      "t_alpha_OOS": 4.49,
+      "turnover": 0.2816,
+      "max_corr_vs_hand": 0.616,
+      "oos_veto": false,
+      "pass_bonferroni": false
+    },
+    "ml_pc1": {
+      "IC_IR_IS": -0.097,
+      "IC_IR_OOS": -0.1964,
+      "alpha_IS_%/y": -23.9,
+      "t_alpha_IS": -1.25,
+      "t_alpha_IS_nw": -0.64,
+      "alpha_OOS_%/y": 42.7,
+      "t_alpha_OOS": 1.91,
+      "turnover": 0.2374,
+      "max_corr_vs_hand": 0.795,
+      "oos_veto": false,
+      "pass_bonferroni": false
+    },
+    "ml_pc2": {
+      "IC_IR_IS": -0.2418,
+      "IC_IR_OOS": -0.3434,
+      "alpha_IS_%/y": 53.7,
+      "t_alpha_IS": 3.09,
+      "t_alpha_IS_nw": 1.61,
+      "alpha_OOS_%/y": 101.2,
+      "t_alpha_OOS": 4.79,
+      "turnover": 0.1216,
+      "max_corr_vs_hand": 0.915,
+      "oos_veto": false,
+      "pass_bonferroni": false
+    },
+    "ml_pc3": {
+      "IC_IR_IS": -0.217,
+      "IC_IR_OOS": -0.0537,
+      "alpha_IS_%/y": 41.5,
+      "t_alpha_IS": 2.09,
+      "t_alpha_IS_nw": 1.18,
+      "alpha_OOS_%/y": -86.6,
+      "t_alpha_OOS": -3.99,
+      "turnover": 0.5321,
+      "max_corr_vs_hand": 0.467,
+      "oos_veto": true,
+      "pass_bonferroni": false
+    },
+    "ml_pc4": {
+      "IC_IR_IS": -0.018,
+      "IC_IR_OOS": 0.0993,
+      "alpha_IS_%/y": 17.1,
+      "t_alpha_IS": 0.88,
+      "t_alpha_IS_nw": 0.47,
+      "alpha_OOS_%/y": -12.3,
+      "t_alpha_OOS": -0.56,
+      "turnover": 0.4167,
+      "max_corr_vs_hand": 0.398,
+      "oos_veto": true,
+      "pass_bonferroni": false
+    },
+    "ml_pc5": {
+      "IC_IR_IS": -0.0257,
+      "IC_IR_OOS": -0.0999,
+      "alpha_IS_%/y": 55.8,
+      "t_alpha_IS": 3.34,
+      "t_alpha_IS_nw": 1.8,
+      "alpha_OOS_%/y": 65.8,
+      "t_alpha_OOS": 3.34,
+      "turnover": 0.3894,
+      "max_corr_vs_hand": 0.111,
+      "oos_veto": false,
+      "pass_bonferroni": false
+    },
+    "ml_ridge": {
+      "IC_IR_IS": 0.2785,
+      "IC_IR_OOS": 0.3255,
+      "alpha_IS_%/y": 97.0,
+      "t_alpha_IS": 5.53,
+      "t_alpha_IS_nw": 3.01,
+      "alpha_OOS_%/y": 89.9,
+      "t_alpha_OOS": 4.09,
+      "turnover": 0.3245,
+      "max_corr_vs_hand": 0.518,
+      "oos_veto": false,
+      "pass_bonferroni": true
+    }
+  },
+  "oos_blind_note": "OOS 只用来**毙**, 不用来**挑**: 拿它挑因子等于偷看答案, 可以看无限次直到好看, 必然过拟合; 拿它毙因子是一次性的, 崩了就承认它不是真的。代价是这一段 OOS 已经用掉了 —— 此后再挖的新因子不能拿同一段 OOS 当证据, 只能靠 IS + 经济逻辑。"
+}
