@@ -1,9 +1,13 @@
 # secrets
 .env
 .env.*
-!.env.example
 *.pem
 *.key
+# 注意这里**没有** `!.env.example` 白名单：这条分支只提交 partB，
+# `.env.example` 是 A 的环境模板、不属于 B，所以它和 .env 一起被 `.env.*` 挡住。
+# 不能改用 .git/info/exclude 挡它 —— gitignore 的优先级高于 info/exclude，
+# 一个 `!` 白名单就能把本地的排除规则整个翻掉（实测过，`git status` 里它又变回 untracked）。
+# 真要提交它：`git add -f .env.example`。
 
 # 主办方发的凭据邮件存档（含真实 API Key / Secret，以及队友邮箱）。
 # 这个仓库要开源，一旦推上去密钥就等于公开泄露、必须作废重发。
