@@ -51,9 +51,14 @@ def simple_activity_bot():
                 time.sleep(INTERVAL_SECONDS)
                 continue
 
-            price = float(pair_data["price"])
+            # 读取接口真实返回字段：LastPrice MaxBid MinAsk
+            last_price = float(pair_data["LastPrice"])
+            max_bid = float(pair_data["MaxBid"])
+            min_ask = float(pair_data["MinAsk"])
+
+            price = last_price
             ts = pd.Timestamp.now()
-            print(f"\n【{time.ctime()}】 {PAIR} 当前价格: {price}")
+            print(f"\n【{time.ctime()}】 {PAIR} Last={last_price} | Bid={max_bid} | Ask={min_ask}")
 
             # 追加新行情到历史缓存
             new_row = pd.DataFrame([{"ts": ts, "price": price}])
@@ -96,11 +101,13 @@ def simple_activity_bot():
             if side == "BUY" and sol_free >= MAX_POSITION:
                 print(f"持仓{sol_free}超过上限{MAX_POSITION}，改为SELL")
                 side = "SELL"
-            # 设置限价单价格
+
+            # 使用盘口价格设置限价，提高成交概率
             if side == "BUY":
-                limit_price = round(price * 0.999, 2)
+                limit_price = round(max_bid * 1.0005, 2)
             else:
-                limit_price = round(price * 1.001, 2)
+                limit_price = round(min_ask * 0.9995, 2)
+
             # 构建 OrderIntent 对象
             order_intent = OrderIntent(
                 pair=PAIR,
