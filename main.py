@@ -67,14 +67,9 @@ def simple_activity_bot():
             history = history.tail(LOOKBACK_BARS + 5)
 
             # 查询账户余额
-            balance = broker.get_balance()
-            if not balance or not balance.get("Success"):
-                print("获取账户余额失败，等待下一轮...")
-                time.sleep(INTERVAL_SECONDS)
-                continue
-            balance_data = balance.get("Data", {})
-            sol_free = float(balance_data.get("SOL", {}).get("free", 0))
-            print(f"当前SOL可用持仓: {sol_free}")
+           sol_free = 0.0
+print(f"【临时模拟】SOL可用持仓: {sol_free}")
+
 
             # 判断历史数据是否足够计算因子
             if len(history) < LOOKBACK_BARS:
