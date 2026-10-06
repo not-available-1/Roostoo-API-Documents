@@ -1,0 +1,144 @@
+装配特征面板…
+  观测 230,226 行 × 62 特征; 4296 个时间截面; 标签非空 100.0%
+
+walk-forward 逐季度重拟合…
+  2025Q1  训练  19150 行 → 预测 24562 行  ridge λ=5623.41  lasso 非零=25
+  2025Q2  训练  43682 行 → 预测 28238 行  ridge λ=31622.8  lasso 非零=24
+  2025Q3  训练  71884 行 → 预测 29604 行  ridge λ=5623.41  lasso 非零=23
+  2025Q4  训练 101448 行 → 预测 34544 行  ridge λ=177828  lasso 非零=23
+  2026Q1  训练 135984 行 → 预测 31864 行  ridge λ=1.77828e+06  lasso 非零=10
+  2026Q2  训练 167878 行 → 预测 31865 行  ridge λ=562341  lasso 非零=16
+  2026Q3  训练 199755 行 → 预测 29797 行  ridge λ=316228  lasso 非零=14
+  2026Q4  训练 229527 行 → 预测   350 行  ridge λ=3.16228e+06  lasso 非零=1
+
+=== ML 因子报告（IS 选择 / OOS 盲验, t_alpha_IS_nw 已做 Newey-West 重叠修正）===
+          IC_IS  IC_IR_IS  IC_OOS  IC_IR_OOS  q_hit_IS  alpha_IS_%/y  t_alpha_IS  t_alpha_IS_nw  beta_IS  alpha_OOS_%/y  t_alpha_OOS  turnover  gate12_3_pass  oos_veto  max_corr_vs_hand  selected  pass_bonferroni
+ml_bag    0.075     0.278   0.075      0.344      1.00       129.461       7.450          4.009   -0.425         92.521        4.159     0.314           True     False             0.517     False             True
+ml_lasso  0.067     0.248   0.081      0.353      1.00        89.238       4.994          2.633   -0.446        101.877        4.574     0.304           True     False             0.519     False            False
+ml_pc1   -0.020    -0.092  -0.029     -0.163      0.75       -17.512      -0.896         -0.448    0.129         33.183        1.476     0.248          False     False             0.781     False            False
+ml_pc2   -0.076    -0.239  -0.085     -0.336      1.00        51.343       2.960          1.538   -0.563         95.915        4.578     0.121           True     False             0.899     False            False
+ml_pc3   -0.050    -0.209  -0.007     -0.036      1.00        41.739       2.140          1.245   -0.301        -84.969       -3.879     0.604           True      True             0.406     False            False
+ml_pc4   -0.004    -0.020   0.015      0.075      0.25         9.708       0.530          0.285   -0.166        -10.770       -0.498     0.368          False      True             0.287     False            False
+ml_pc5   -0.006    -0.037  -0.016     -0.093      0.75        60.296       3.529          1.908   -0.062         88.048        4.442     0.397          False     False             0.065     False            False
+ml_ridge  0.076     0.269   0.083      0.330      1.00       102.767       5.861          3.139   -0.486         91.778        4.186     0.294           True     False             0.565     False             True
+
+IS 三门槛全过: ['ml_bag', 'ml_lasso', 'ml_pc2', 'ml_pc3', 'ml_ridge']
+OOS 一票否决(盲验段 alpha<=0, 不许交给 C): ['ml_pc3']
+与手工入选因子重复(|相关|>0.5, 被 seed 挡掉): ['ml_bag', 'ml_lasso', 'ml_pc1', 'ml_pc2', 'ml_ridge']
+去相关后入选(交给 C 的候选): []
+Bonferroni 临界 t（8 个模型, 5% 双尾）= 2.73; 过线: ['ml_bag', 'ml_ridge']
+
+=== ML 因子 vs 现有手工入选因子（IS 平均横截面相关, 行=手工 列=ML）===
+                ml_bag  ml_lasso  ml_pc1  ml_pc2  ml_pc3  ml_pc4  ml_pc5  ml_ridge
+mom_30d_skip1d   0.270     0.231   0.488  -0.017  -0.406  -0.287  -0.065     0.274
+lowvol_14d       0.517     0.519  -0.003  -0.899  -0.113  -0.014   0.018     0.565
+rangepos_14d     0.333     0.330   0.781  -0.257  -0.027  -0.036   0.046     0.325
+
+每个 ML 因子与手工因子的最大 |相关|（>0.5 即视为马甲）:
+ml_bag      0.517
+ml_lasso    0.519
+ml_pc1      0.781
+ml_pc2      0.899
+ml_pc3      0.406
+ml_pc4      0.287
+ml_pc5      0.065
+ml_ridge    0.565
+
+=== 模型归因（最后一折的权重, |w| 前 10）===
+
+  ml_ridge
+    rv_90                -0.0025   [vol]
+    dvol_90              -0.0024   [vol]
+    idiovol_90           -0.0022   [rel]
+    rv_180               -0.0022   [vol]
+    pk_42                -0.0020   [vol]
+    rv_42                -0.0020   [vol]
+    hl_range_18          -0.0020   [shape]
+    rv_6                 -0.0018   [vol]
+    rv_18                -0.0018   [vol]
+    volofvol_90          -0.0016   [vol]
+  ml_ridge_lambda = 3162277.6601683795
+
+  ml_lasso
+    rv_90                -0.0077   [vol]
+  ml_lasso_lambda = 0.046415888336127774
+  ml_lasso_n_nonzero = 1
+
+  ml_pc1
+    r_42                 +0.2401   [ret]
+    rs_42                +0.2401   [rel]
+    rs_90                +0.2374   [rel]
+    r_90                 +0.2374   [ret]
+    rangepos_90          +0.2345   [shape]
+    resmom_42            +0.2323   [rel]
+    rangepos_180         +0.2188   [shape]
+    r_90_skip6           +0.2131   [ret]
+    r_6_minus_r_42       -0.2076   [ret]
+    r_42_skip6           +0.2076   [ret]
+  ml_pc1_var_explained = 0.3704590237171796
+
+  ml_pc2
+    rv_90                +0.2898   [vol]
+    dvol_90              +0.2868   [vol]
+    rv_180               +0.2736   [vol]
+    pk_42                +0.2720   [vol]
+    rv_42                +0.2688   [vol]
+    idiovol_90           +0.2641   [rel]
+    hl_range_18          +0.2620   [shape]
+    rv_18                +0.2382   [vol]
+    volofvol_90          +0.2155   [vol]
+    dd_90                -0.2060   [shape]
+  ml_pc2_var_explained = 0.30392299409359785
+
+  ml_pc3
+    qv_z_18              +0.2718   [liq]
+    nt_z_18              +0.2656   [liq]
+    r_6                  +0.2437   [ret]
+    rangepos_6           +0.2400   [shape]
+    r_3                  +0.2365   [ret]
+    rangepos_18          +0.2265   [shape]
+    r_18_minus_r_90      +0.2243   [ret]
+    qv_z_90              +0.2218   [liq]
+    r_2                  +0.2185   [ret]
+    r_90_skip6           -0.2085   [ret]
+  ml_pc3_var_explained = 0.15274434074422558
+
+  ml_pc4
+    rv_ratio_18_90       +0.3355   [vol]
+    qv_trend_18_90       +0.2661   [liq]
+    beta_42              +0.1948   [rel]
+    r_6_minus_r_42       -0.1830   [ret]
+    r_42_skip6           +0.1830   [ret]
+    r_2                  -0.1802   [ret]
+    r_180                -0.1799   [ret]
+    r_3                  -0.1740   [ret]
+    rangepos_6           -0.1731   [shape]
+    qv_z_6               -0.1681   [liq]
+  ml_pc4_var_explained = 0.09036247023299511
+
+  ml_pc5
+    qv_z_90              +0.3785   [liq]
+    qv_z_18              +0.3437   [liq]
+    qv_z_6               +0.3052   [liq]
+    nt_z_18              +0.3003   [liq]
+    rangepos_6           -0.2200   [shape]
+    rangepos_18          -0.1938   [shape]
+    fund_3d              -0.1783   [fund]
+    fund_7d              -0.1763   [fund]
+    qv_trend_18_90       +0.1687   [liq]
+    rv_ratio_18_90       +0.1625   [vol]
+  ml_pc5_var_explained = 0.08251117121200188
+
+  ml_bag
+    rv_90                -0.0393   [vol]
+    r_180                -0.0328   [ret]
+    r_180_skip6          +0.0325   [ret]
+    r_90_skip6           +0.0317   [ret]
+    rs_42                -0.0262   [rel]
+    rangepos_90          +0.0224   [shape]
+    dvol_90              -0.0197   [vol]
+    r_42                 -0.0172   [ret]
+    intrabar_18          +0.0170   [shape]
+    r_90                 -0.0157   [ret]
+
+写入 reports/ml_selected.json + ml_factor_report.csv

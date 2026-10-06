@@ -1,0 +1,66 @@
+{
+  "universe_symbols": 65,
+  "interval": "4h",
+  "horizon_bars": 6,
+  "split_iso": "2026-01-01",
+  "min_usd": 1000000,
+  "rule": "IS-only: |IC_IR_IS|>=0.05, IS quarter hit>=0.67, LS alpha>0.0%/y with t>=2.0, corr<=0.5",
+  "selected": [
+    "lowvol_14d",
+    "rangepos_14d",
+    "mom_30d_skip1d"
+  ],
+  "ic_ir_weights": {
+    "lowvol_14d": 0.6362,
+    "rangepos_14d": 0.2064,
+    "mom_30d_skip1d": 0.1574
+  },
+  "ic_sign_is": {
+    "lowvol_14d": 1,
+    "rangepos_14d": 1,
+    "mom_30d_skip1d": 1
+  },
+  "economic_is": {
+    "lowvol_14d": {
+      "alpha_%/y": 72.7,
+      "t_alpha": 4.09,
+      "beta_to_market": -0.56
+    },
+    "rangepos_14d": {
+      "alpha_%/y": 139.2,
+      "t_alpha": 7.82,
+      "beta_to_market": -0.16
+    },
+    "mom_30d_skip1d": {
+      "alpha_%/y": 93.1,
+      "t_alpha": 4.98,
+      "beta_to_market": -0.21
+    }
+  },
+  "economic_oos_blind": {
+    "note": "事后诊断, **不要**拿它回头改 selected(那就不盲了)。方向仍按 IS 的 sign。看它只为一件事: 哪些 IS 通过的因子在 OOS 崩了 → 别在实盘用。",
+    "lowvol_14d": {
+      "alpha_%/y": 101.6,
+      "t_alpha": 4.44,
+      "pass": true
+    },
+    "rangepos_14d": {
+      "alpha_%/y": 93.9,
+      "t_alpha": 4.68,
+      "pass": true
+    },
+    "mom_30d_skip1d": {
+      "alpha_%/y": -68.7,
+      "t_alpha": -3.17,
+      "pass": false
+    }
+  },
+  "walk_forward": {
+    "note": "selected/ic_ir_weights 是 IS(2024-10~2025-12) 的选择, 用于 OOS 盲验; 实盘请用 live_selected(只用该季之前数据选出), 两者可能不同",
+    "live_quarter": "2026Q4",
+    "live_selected": [
+      "lowvol_14d",
+      "rangepos_14d"
+    ]
+  }
+}

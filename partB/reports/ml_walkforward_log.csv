@@ -1,0 +1,9 @@
+﻿quarter,n_train,n_test,ridge_lambda,lasso_nz,models
+2025Q1,19150,24562,5623.413251903491,18,"ml_bag,ml_lasso,ml_pc1,ml_pc2,ml_pc3,ml_pc4,ml_pc5,ml_ridge"
+2025Q2,43682,28238,10000.0,15,"ml_bag,ml_lasso,ml_pc1,ml_pc2,ml_pc3,ml_pc4,ml_pc5,ml_ridge"
+2025Q3,71884,29604,10000.0,19,"ml_bag,ml_lasso,ml_pc1,ml_pc2,ml_pc3,ml_pc4,ml_pc5,ml_ridge"
+2025Q4,101448,34544,316227.7660168379,23,"ml_bag,ml_lasso,ml_pc1,ml_pc2,ml_pc3,ml_pc4,ml_pc5,ml_ridge"
+2026Q1,135984,31864,5623413.251903491,21,"ml_bag,ml_lasso,ml_pc1,ml_pc2,ml_pc3,ml_pc4,ml_pc5,ml_ridge"
+2026Q2,167878,31865,1000000.0,19,"ml_bag,ml_lasso,ml_pc1,ml_pc2,ml_pc3,ml_pc4,ml_pc5,ml_ridge"
+2026Q3,199755,29797,316227.7660168379,16,"ml_bag,ml_lasso,ml_pc1,ml_pc2,ml_pc3,ml_pc4,ml_pc5,ml_ridge"
+2026Q4,229527,350,3162277.6601683795,1,"ml_bag,ml_lasso,ml_pc1,ml_pc2,ml_pc3,ml_pc4,ml_pc5,ml_ridge"

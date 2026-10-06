@@ -1,0 +1,13 @@
+                         IC      IR     hit   IC_IS   IR_IS
+carry_3d          1 -0.0060 -0.0389  0.4911 -0.0080 -0.0518
+chg_3d_7d         1  0.0066  0.0419  0.5212  0.0052  0.0315
+extreme_top20     1     NaN     NaN     NaN     NaN     NaN
+carry_x_sign_ret7 1  0.0031  0.0214  0.5069  0.0091  0.0594
+carry_3d          3 -0.0036 -0.0232  0.5117 -0.0047 -0.0297
+chg_3d_7d         3  0.0058  0.0375  0.5213  0.0081  0.0494
+extreme_top20     3     NaN     NaN     NaN     NaN     NaN
+carry_x_sign_ret7 3  0.0048  0.0309  0.5069  0.0115  0.0701
+carry_3d          7 -0.0028 -0.0179  0.4883 -0.0059 -0.0380
+chg_3d_7d         7  0.0085  0.0549  0.5103  0.0088  0.0540
+extreme_top20     7     NaN     NaN     NaN     NaN     NaN
+carry_x_sign_ret7 7 -0.0083 -0.0558  0.4930  0.0011  0.0073
