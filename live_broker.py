@@ -17,8 +17,8 @@ class LiveBroker:
         sorted_items = sorted(payload.items())
         raw = "&".join([f"{k}={v}" for k, v in sorted_items])
         return hmac.new(
-            self.secret_key.encode("utf‑8"),
-            raw.encode("utf‑8"),
+            self.secret_key.encode("utf-8"),
+            raw.encode("utf-8"),
             hashlib.sha256
         ).hexdigest()
 
@@ -32,7 +32,7 @@ class LiveBroker:
                 resp = self.session.get(
                     url,
                     params=params,
-                    headers={"X‑API‑Key": self.api_key},
+                    headers={"X-API-Key": self.api_key},
                     timeout=15
                 )
                 try:
@@ -51,8 +51,8 @@ class LiveBroker:
         payload["timestamp"] = int(time.time() * 1000)
         sign = self._sign(payload)
         headers = {
-            "X‑API‑Key": self.api_key,
-            "X‑API‑Sign": sign
+            "X-API-Key": self.api_key,
+            "X-API-Sign": sign
         }
         try:
             resp = self.session.post(url, json=payload, headers=headers, timeout=15)
@@ -66,7 +66,7 @@ class LiveBroker:
             return {"success": False, "raw_response": str(e)}
 
     def get_ticker(self, pair: str):
-        """获取行情，修复：路径/v3/ticker，带上毫秒timestamp"""
+        """获取行情，路径/v3/ticker，带上毫秒timestamp"""
         ts_ms = int(time.time() * 1000)
         return self._get(
             path="/v3/ticker",
