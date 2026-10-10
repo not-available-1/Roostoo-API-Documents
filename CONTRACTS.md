@@ -14,7 +14,7 @@ C currently emits `Target(symbol, target_weight, reason="", ts=None)`. `target_w
 
 An **empty C target list means HOLD / no rebalance** in D phase 1. It is never interpreted as flatten. A **non-empty** target list is treated as the complete desired portfolio, matching C's current backtest semantics; held symbols omitted from that list receive an implicit zero target during reconciliation. D assigns a deterministic batch `decision_id` and retains C's `reason` for audit.
 
-`evaluate_targets` processes a batch in input order. Each symbol may appear once; duplicate symbols raise an error. `RiskResult` retains the requested target, an approved target or `None`, status (`unchanged`, `clipped`, `rejected`), ordered rule violations, and a human reason. Rejected results must never be passed to reconciliation.
+`evaluate_targets` processes a batch in input order. Each symbol may appear once; duplicate symbols raise an error. `RiskResult` retains the requested target, an approved target or `None`, status (`unchanged`, `clipped`, `rejected`), ordered rule violations, and a human reason. For live handoff use `plan_trading_bot_decision`: it adds omitted held symbols as zero targets before risk evaluation and blocks the **entire** batch if any target is rejected. Filtering rejected targets and directly reconciling the rest can produce an unintended flatten.
 
 ## D → A: OrderIntent — D internal + current A boundary
 
@@ -22,7 +22,7 @@ D's internal `OrderIntent` carries `intent_id`, `decision_id`, `symbol`, `side` 
 
 A currently accepts `base.OrderIntent(pair, side, quantity, price, order_type, reason)`. `d_layer.adapters.to_a_order_intent` maps D's internal intent to that exact shape without importing or modifying A's module. Decimal quantity is converted to float only at that boundary. D metadata (`intent_id`, `decision_id`, phase, reduce-only state) is appended to `reason` so it is not lost while A's current contract remains minimal.
 
-For a flip, D emits a `CLOSE` intent followed by an `OPEN` intent. All risk-reducing intents in a batch are ordered before risk-increasing intents. **A must wait for confirmed close fill and refresh account state before submitting the open.** Partial fills, rejects, or changed equity require replanning and possibly another D risk check; array order alone is not an execution guarantee. A must enforce exchange quantity step, minimum size/notional, and any actual reduce-only mechanism. D requires A's precision metadata and floors desired quantity toward zero to the supplied step. Fees and slippage are A/C integration topics; D never formats an exchange request.
+The low-level `reconcile` function can calculate a full ordered plan. The `trading-bot` handoff returns **at most its first intent**; A must wait for confirmed fill, refresh account state and replan before the next submission. Partial fills, rejects, or changed equity require another D risk check. A must enforce exchange quantity step, minimum size/notional, and any actual reduce-only mechanism. D requires A's precision metadata and floors desired quantity toward zero to the supplied step. Fees and slippage are A/C integration topics; D never formats an exchange request. Current A supports only spot-style BUY/SELL, so the handoff requires `allow_short=False`.
 
 ## A → everyone: Broker protocol — integration contract to confirm
 

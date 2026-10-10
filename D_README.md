@@ -4,10 +4,8 @@ D sits between C's target portfolio and A's execution broker. It does **not** ge
 
 ```text
 C Target(s)
-    -> adapt_c_targets
-    -> evaluate_targets
-    -> reconcile
-    -> internal D OrderIntent
+    -> plan_trading_bot_decision (adapt, complete portfolio, risk, reconcile)
+    -> at most one internal D OrderIntent
     -> to_a_order_intent
     -> A Broker
 ```
@@ -36,6 +34,8 @@ OrderIntent(
 ```
 
 D keeps a richer internal intent (`intent_id`, `decision_id`, reduce-only flag, phase) and maps it to A's current shape only at the boundary. D does not import or modify A's module.
+
+For the actual `trading-bot` A/C shapes, use `d_layer.handoff.plan_trading_bot_decision` as the integration entrypoint. It blocks the entire decision on any rejected target, validates Free sellable quantity and minimum notional, skips settled repeat decisions, and releases at most one intent before a confirmed fill and account refresh. See `docs/D_TO_A_C_HANDOFF.md` for exact inputs, state transitions, and live blockers.
 
 ## What D provides
 
@@ -75,12 +75,10 @@ The CLI requires `--periods-per-year` explicitly so a 4h series cannot silently 
 
 ## Integration order
 
-1. C produces targets.
-2. D adapts and risk-checks them.
-3. D reads a normalized account/price snapshot from A/B adapters.
-4. D reconciles approved targets against actual positions.
-5. D maps internal intents to A's current `OrderIntent`.
-6. A executes and returns broker/fill state.
-7. D logs the lifecycle and replans from refreshed account state.
+1. C produces targets with a shared explicit decision timestamp.
+2. A supplies a normalized account/price snapshot, Free sellable balances, exchange steps/minimums, and durable order state.
+3. D plans one risk-approved intent through `plan_trading_bot_decision`.
+4. A maps that intent to its current `OrderIntent`, submits once, then confirms the outcome.
+5. A refreshes account state and replans the same C decision until no intent remains; only then is the decision settled.
 
-Before live integration, the team still must agree the symbol naming/mapping, A's normalized balance/position fields, precision metadata, and actual risk-limit values. See `docs/D_INTEGRATION_CHECKLIST.md`.
+Before live integration, the team still must agree the symbol naming/mapping, A's normalized balance/position fields, precision metadata, fill confirmation, and actual risk-limit values. See `docs/D_TO_A_C_HANDOFF.md` and `docs/D_INTEGRATION_CHECKLIST.md`.
